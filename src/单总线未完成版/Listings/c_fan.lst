@@ -1,0 +1,878 @@
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02c
+OBJECT MODULE PLACED IN .\Objects\c_fan.obj
+ASSEMBLER INVOKED BY: C:\Program Files\Keil_v5\C51\BIN\A51.EXE c_fan.asm SET(SMALL) DEBUG PRINT(.\Listings\c_fan.lst) OB
+                      JECT(.\Objects\c_fan.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ;#include <head.inc>
+                +1     2     
+                +1     3     
+                +1     4     
+                +1     5     
+                +1     6     
+                +1     7     
+                +1     8     
+  00AA          +1     9     WKTCL DATA 0AAH
+  00AB          +1    10     WKTCH DATA 0ABH
+  00C2          +1    11     IAP_DATA DATA 0C2H
+  00C3          +1    12     IAP_ADDRH DATA 0C3H
+  00C4          +1    13     IAP_ADDRL DATA 0C4H
+  00C5          +1    14     IAP_CMD DATA 0C5H
+  00C6          +1    15     IAP_TRIG DATA 0C6H
+  00C7          +1    16     IAP_CONTR DATA 0C7H                                              
+  0032          +1    17     LEDN1 DATA 32H                                                   
+  0033          +1    18     LEDN2 DATA 33H                                                   
+  0034          +1    19     LEDN3 DATA 34H                                                   
+  0035          +1    20     TPT1_L DATA 35H                                                  
+  0036          +1    21     TPT1_H DATA 36H                                                  
+  0037          +1    22     TPT2_L DATA 37H                                                  
+  0038          +1    23     TPT2_H DATA 38H                                                  
+  0039          +1    24     TPDF_COPY DATA 39H                                               
+  003A          +1    25     TPDF_C DATA 3AH                                                  
+  003B          +1    26     W_LAT DATA 3BH                                                   
+  003C          +1    27     ROMPTR DATA 3CH                                                  
+  003D          +1    28     ROMJ DATA 3DH                                                    
+  003E          +1    29     TEMP1 DATA 3EH                                                   
+  003F          +1    30     TEMP2 DATA 3FH                                                   
+  0040          +1    31     ROM1_1 DATA 40H                                                  
+  0041          +1    32     ROM1_2 DATA 41H                                                  
+  0042          +1    33     ROM1_3 DATA 42H                                                  
+  0043          +1    34     ROM1_4 DATA 43H                                                  
+  0044          +1    35     ROM1_5 DATA 44H                                                  
+  0045          +1    36     ROM1_6 DATA 45H                                                  
+  0046          +1    37     ROM1_7 DATA 46H                                                  
+  0047          +1    38     ROM1_8 DATA 47H                                                  
+  0048          +1    39     ROM2_1 DATA 48H                                                  
+  0049          +1    40     ROM2_2 DATA 49H                                                  
+  004A          +1    41     ROM2_3 DATA 4AH                                                  
+  004B          +1    42     ROM2_4 DATA 4BH                                                  
+  004C          +1    43     ROM2_5 DATA 4CH                                                  
+  004D          +1    44     ROM2_6 DATA 4DH                                                  
+  004E          +1    45     ROM2_7 DATA 4EH                                                  
+  004F          +1    46     ROM2_8 DATA 4FH                                                  
+  0050          +1    47     TPDF_C_L DATA 50H                                                
+  0051          +1    48     TPDF_C_H DATA 51H                                                
+  0052          +1    49     LEDNUMPT DATA 52H                                                
+  0053          +1    50     TPDF_COPY_L DATA 53H                                     
+  0054          +1    51     TPDF_COPY_H DATA 54H                                     
+  0000          +1    52     LSE EQU 00H                                                              
+  0001          +1    53     ROMR1 EQU 01H                                                    
+  0002          +1    54     ROMR2 EQU 02H                                                    
+  0003          +1    55     ROMJE EQU 03H                                                    
+  0004          +1    56     ROMJF EQU 04H                                                    
+  0005          +1    57     CCLATNF EQU 05H                                                  
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE     2
+
+  0090          +1    58     DQ EQU P1.0
+  0091          +1    59     EXECT EQU P1.1
+  0092          +1    60     SDI EQU P1.2
+  0093          +1    61     OE EQU P1.3
+  0094          +1    62     SCK EQU P1.4
+  0095          +1    63     LCK EQU P1.5
+  00B3          +1    64     K0 EQU P3.3
+  00B6          +1    65     K1 EQU P3.6
+  00B7          +1    66     K2 EQU P3.7
+                      67     
+                      68     
+0000                  69     ORG 0000H                                                        
+0000 2100             70     AJMP MAIN                                                        
+0003                  71     ORG 0003H                                                                
+0003 6165             72     AJMP KEY_0                                                       
+0100                  73     ORG 0100H                                                        
+                      74                                                                     
+                      75     
+                      76     
+0100                  77     MAIN:             
+0100 3116             78     ACALL INIT                                                       
+0102                  79     M_LOOP:
+0102 75A800           80     MOV IE, #00H                                                     
+0105 3155             81     ACALL READ_T_DO
+0107 5105             82     ACALL DRIVE_LED_C
+0109 75A881           83     MOV IE, #81H                                                     
+010C 758702           84     MOV PCON, #02H                                                   
+010F 00               85     NOP
+0110 00               86     NOP
+0111 2000FD           87     JB LSE,$
+0114 2102             88     AJMP M_LOOP
+                      89                                                                     
+                      90     
+                      91     
+0116                  92     INIT:
+0116 75817F           93     MOV SP,#7FH                                                              
+0119 C200             94     CLR LSE                                                                  
+011B 75C300           95     MOV IAP_ADDRH, #00H                                              
+011E 75C400           96     MOV IAP_ADDRL, #00H                                              
+0121 91A9             97     ACALL R_E2PROM                                                   
+0123 F539             98     MOV TPDF_COPY,A
+0125 D2B2             99     SETB P3.2                                                                
+0127 71F0            100     ACALL KCLR
+0129 D288            101     SETB TCON.0                                                              
+012B 75A800          102     MOV IE, #00H                                                     
+012E 5197            103     ACALL RS_18B20                                                   
+0130 74CC            104     MOV A, #0CCH                                                     
+0132 51AB            105     ACALL W_18B20_BYTE
+0134 744E            106     MOV A, #4EH                                                              
+0136 51AB            107     ACALL W_18B20_BYTE
+0138 7455            108     MOV A, #55H                                                              
+013A 51AB            109     ACALL W_18B20_BYTE
+013C 74F5            110     MOV A, #0F5H                                                     
+013E 51AB            111     ACALL W_18B20_BYTE
+0140 741F            112     MOV A, #1FH                                                              
+0142 51AB            113     ACALL W_18B20_BYTE
+0144 5197            114     ACALL RS_18B20                                                   
+0146 74CC            115     MOV A, #0CCH                                                     
+0148 51AB            116     ACALL W_18B20_BYTE
+014A 7448            117     MOV A, #48H                                                              
+014C 51AB            118     ACALL W_18B20_BYTE
+014E 75AAFF          119     MOV WKTCL, #0FFH                                                 
+0151 75AB9F          120     MOV WKTCH, #9FH                                                  
+0154 22              121     RET
+                     122                                                                     
+                     123     
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE     3
+
+                     124     
+0155                 125     READ_T_DO:
+0155 75A800          126     MOV IE, #00H                                                     
+0158 5197            127     ACALL RS_18B20
+015A 74CC            128     MOV A, #0CCH                                                     
+015C 51AB            129     ACALL W_18B20_BYTE
+015E 7444            130     MOV A, #44H                                                              
+0160 51AB            131     ACALL W_18B20_BYTE
+0162 9187            132     ACALL DELAY1000MS
+0164 5197            133     ACALL RS_18B20
+0166 713B            134     ACALL MATCH_ROM1                                                 
+0168 74BE            135     MOV A, #0BEH                                                     
+016A 51AB            136     ACALL W_18B20_BYTE
+016C 51BF            137     ACALL R_18B20_BYTE
+016E F535            138     MOV TPT1_L,A
+0170 51BF            139     ACALL R_18B20_BYTE
+0172 F536            140     MOV TPT1_H,A
+0174 5197            141     ACALL RS_18B20
+0176 714B            142     ACALL MATCH_ROM2                                                 
+0178 74BE            143     MOV A, #0BEH                                                     
+017A 51AB            144     ACALL W_18B20_BYTE
+017C 51BF            145     ACALL R_18B20_BYTE
+017E F537            146     MOV TPT2_L,A
+0180 51BF            147     ACALL R_18B20_BYTE
+0182 F538            148     MOV TPT2_H,A
+0184 31A4            149     ACALL CCLAT
+0186 E539            150     MOV A,TPDF_COPY
+0188 B53A00          151     CJNE A,TPDF_C,J_DO
+018B                 152     J_DO:
+018B 400B            153     JC DO
+018D 14              154     DEC A
+018E 14              155     DEC A
+018F B53A00          156     CJNE A,TPDF_C,J_UNDO
+0192                 157     J_UNDO:
+0192 500A            158     JNC UNDO
+0194 75A881          159     MOV IE, #81H                                                     
+0197 22              160     RET
+0198                 161     DO:
+0198 D291            162     SETB EXECT                                                               
+019A 75A881          163     MOV IE, #81H                                                     
+019D 22              164     RET
+019E                 165     UNDO:
+019E C291            166     CLR EXECT                                                                
+01A0 75A881          167     MOV IE, #81H                                                     
+01A3 22              168     RET
+01A4                 169     CCLAT:                                                                   
+01A4 E535            170     MOV A,TPT1_L
+01A6 31F7            171     ACALL CCLAT_MOV_R
+01A8 F535            172     MOV TPT1_L,A
+01AA E536            173     MOV A,TPT1_H
+01AC 31FE            174     ACALL CCLAT_MOV_L
+01AE F536            175     MOV TPT1_H,A
+01B0 4535            176     ORL A,TPT1_L
+01B2 F53E            177     MOV TEMP1,A
+01B4 E537            178     MOV A,TPT2_L
+01B6 31F7            179     ACALL CCLAT_MOV_R
+01B8 F537            180     MOV TPT2_L,A
+01BA E538            181     MOV A,TPT2_H
+01BC 31FE            182     ACALL CCLAT_MOV_L
+01BE F538            183     MOV TPT2_H,A
+01C0 4537            184     ORL A,TPT2_L
+01C2 F53F            185     MOV TEMP2,A
+01C4 953E            186     SUBB A,TEMP1                                                     
+01C6 33              187     RLC A
+01C7 4015            188     JC CCLAT_N
+01C9 C205            189     CLR CCLATNF
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE     4
+
+01CB 13              190     RRC A
+01CC F53A            191     MOV TPDF_C,A
+01CE 75F064          192     MOV B, #64H
+01D1 84              193     DIV AB
+01D2 E5F0            194     MOV A,B
+01D4 75F00A          195     MOV B, #0AH
+01D7 84              196     DIV AB
+01D8 F551            197     MOV TPDF_C_H,A
+01DA 85F050          198     MOV TPDF_C_L,B
+01DD 22              199     RET
+01DE                 200     CCLAT_N:
+01DE D205            201     SETB CCLATNF
+01E0 F4              202     CPL A
+01E1 13              203     RRC A
+01E2 547F            204     ANL A, #7FH
+01E4 04              205     INC A
+01E5 F53A            206     MOV TPDF_C,A
+01E7 75F064          207     MOV B, #64H
+01EA 84              208     DIV AB
+01EB E5F0            209     MOV A,B
+01ED 75F00A          210     MOV B, #0AH
+01F0 84              211     DIV AB
+01F1 F551            212     MOV TPDF_C_H,A
+01F3 85F050          213     MOV TPDF_C_L,B
+01F6 22              214     RET
+01F7                 215     CCLAT_MOV_R:
+01F7 54F0            216     ANL A, #0F0H
+01F9 03              217     RR A
+01FA 03              218     RR A
+01FB 03              219     RR A
+01FC 03              220     RR A
+01FD 22              221     RET
+01FE                 222     CCLAT_MOV_L:
+01FE 540F            223     ANL A, #0FH
+0200 23              224     RL A
+0201 23              225     RL A
+0202 23              226     RL A
+0203 23              227     RL A
+0204 22              228     RET
+                     229                                                                     
+                     230     
+                     231     
+0205                 232     DRIVE_LED_C:
+0205 200513          233     JB CCLATNF,DRV_N                                                 
+0208 7532FF          234     MOV LEDN1, #0FFH                                                 
+020B 900289          235     MOV DPTR,#LEDNUM
+020E E551            236     MOV A,TPDF_C_H
+0210 93              237     MOVC A,@A+DPTR
+0211 F533            238     MOV LEDN2,A
+0213 E550            239     MOV A,TPDF_C_L
+0215 93              240     MOVC A,@A+DPTR
+0216 F534            241     MOV LEDN3,A
+0218 515B            242     ACALL W_Latch
+021A 22              243     RET
+021B                 244     DRV_N:
+021B 75327F          245     MOV LEDN1, #7FH                                          
+021E 900289          246     MOV DPTR,#LEDNUM
+0221 E551            247     MOV A,TPDF_C_H
+0223 93              248     MOVC A,@A+DPTR
+0224 F533            249     MOV LEDN2,A
+0226 E550            250     MOV A,TPDF_C_L
+0228 93              251     MOVC A,@A+DPTR
+0229 F534            252     MOV LEDN3,A
+022B 515B            253     ACALL W_Latch
+022D 22              254     RET
+                     255                                                                     
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE     5
+
+                     256     
+                     257     
+022E                 258     DRIVE_LED_KEY:                                                   
+022E 300015          259     JNB LSE,USELESS
+0231 753257          260     MOV LEDN1, #57H                                          
+0234 5149            261     ACALL CCLAT_TPDF                                                 
+0236 900289          262     MOV DPTR,#LEDNUM
+0239 E554            263     MOV A,TPDF_COPY_H
+023B 93              264     MOVC A,@A+DPTR
+023C F533            265     MOV LEDN2,A
+023E E553            266     MOV A,TPDF_COPY_L
+0240 93              267     MOVC A,@A+DPTR
+0241 F534            268     MOV LEDN3,A
+0243 515B            269     ACALL W_Latch                                                    
+0245 22              270     RET
+0246                 271     USELESS:
+0246 5105            272     ACALL DRIVE_LED_C                                                
+0248 22              273     RET
+0249                 274     CCLAT_TPDF:                                                              
+0249 E539            275     MOV A, TPDF_COPY
+024B 75F064          276     MOV B, #64H
+024E 84              277     DIV AB
+024F E5F0            278     MOV A,B
+0251 75F00A          279     MOV B, #0AH
+0254 84              280     DIV AB
+0255 F554            281     MOV TPDF_COPY_H,A
+0257 85F053          282     MOV TPDF_COPY_L,B
+025A 22              283     RET
+                     284                                     
+025B                 285     W_Latch:                                                                 
+025B C293            286     CLR OE
+025D C294            287     CLR SCK
+025F C295            288     CLR LCK
+0261 8534E0          289     MOV ACC,LEDN3
+0264 753B08          290     MOV W_LAT,#08H
+0267 517E            291     ACALL W_L_LOOP
+0269 8533E0          292     MOV ACC,LEDN2
+026C 753B08          293     MOV W_LAT,#08H
+026F 517E            294     ACALL W_L_LOOP
+0271 8532E0          295     MOV ACC,LEDN1
+0274 753B08          296     MOV W_LAT,#08H
+0277 517E            297     ACALL W_L_LOOP
+0279 D294            298     SETB SCK
+027B C294            299     CLR SCK
+027D 22              300     RET
+027E                 301     W_L_LOOP:
+027E 33              302     RLC A
+027F 9292            303     MOV SDI,C
+0281 D295            304     SETB LCK
+0283 C295            305     CLR LCK
+0285 D53BF6          306     DJNZ W_LAT,W_L_LOOP
+0288 22              307     RET
+                     308                                     
+0289                 309     LEDNUM:
+0289 82FA4652        310     DB 82H,0FAH,46H,52H,3AH,13H,03H,0DAH,02H,12H,57H,0AH,22H,7FH
+028D 3A1303DA                
+0291 0212570A                
+0295 227F                    
+                     311     
+                     312                                                                     
+                     313     
+                     314     
+0297                 315     RS_18B20:                
+0297 9136            316     ACALL DELAY600US
+0299 D290            317     SETB DQ
+029B 00              318     NOP
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE     6
+
+029C 00              319     NOP
+029D C290            320     CLR DQ
+029F 9136            321     ACALL DELAY600US
+02A1 D290            322     SETB DQ
+02A3 9127            323     ACALL DELAY80US
+02A5 2090EF          324     JB DQ, RS_18B20
+02A8 9136            325     ACALL DELAY600US
+02AA 22              326     RET
+02AB                 327     W_18B20_BYTE:    
+02AB D290            328     SETB DQ
+02AD 7D08            329     MOV R5, #08H
+02AF                 330     W_18B20_BIT:
+02AF 13              331     RRC A
+02B0 C290            332     CLR DQ
+02B2 71F7            333     ACALL DELAY2US
+02B4 9290            334     MOV DQ, C
+02B6 910E            335     ACALL DELAY25US
+02B8 D290            336     SETB DQ
+02BA 9119            337     ACALL DELAY60US
+02BC DDF1            338     DJNZ R5, W_18B20_BIT
+02BE 22              339     RET
+02BF                 340     R_18B20_BYTE:    
+02BF D290            341     SETB DQ
+02C1 7D08            342     MOV R5, #08H
+02C3                 343     R_18B20_BIT:
+02C3 C290            344     CLR DQ
+02C5 71F7            345     ACALL DELAY2US
+02C7 D290            346     SETB DQ
+02C9 9103            347     ACALL DELAY10US
+02CB A290            348     MOV C, DQ
+02CD 9119            349     ACALL DELAY60US
+02CF 13              350     RRC A
+02D0 DDF1            351     DJNZ R5, R_18B20_BIT
+02D2 22              352     RET
+                     353                                     
+02D3                 354     SEARCH_LOOP:                                                     
+02D3 51C3            355     ACALL R_18B20_BIT
+02D5 9201            356     MOV ROMR1,C
+02D7 51C3            357     ACALL R_18B20_BIT
+02D9 9202            358     MOV ROMR2,C
+02DB                 359     JG_ROMR:
+02DB 300103          360     JNB ROMR1,JG_0
+02DE 200106          361     JB ROMR1,JG_1
+02E1                 362     JG_0:
+02E1 300214          363     JNB ROMR2,S_R_00
+02E4 200206          364     JB ROMR2,S_R_01
+02E7                 365     JG_1:
+02E7 300207          366     JNB ROMR2,S_R_10
+02EA 200208          367     JB ROMR2,S_R_11
+02ED                 368     S_R_01:                                                                  
+02ED C3              369     CLR C
+02EE 51AF            370     ACALL W_18B20_BIT
+02F0 22              371     RET
+02F1                 372     S_R_10:                                                                  
+02F1 D3              373     SETB C
+02F2 51AF            374     ACALL W_18B20_BIT
+02F4 22              375     RET
+02F5                 376     S_R_11:                                                                  
+02F5 75C720          377     MOV IAP_CONTR, #20H                                              
+02F8                 378     S_R_00:                                                                  
+02F8 853C3D          379     MOV ROMJ,ROMPTR
+02FB 200306          380     JB ROMJE,S_R_00_1
+02FE D204            381     SETB ROMJF
+0300 C3              382     CLR C
+0301 51AF            383     ACALL W_18B20_BIT
+0303 22              384     RET
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE     7
+
+0304                 385     S_R_00_1:
+0304 C203            386     CLR ROMJE
+0306 C204            387     CLR ROMJF
+0308 D3              388     SETB C
+0309 51AF            389     ACALL W_18B20_BIT
+030B 22              390     RET
+                     391                                     
+030C                 392     S_W_LOOP:                                                                
+030C 51D3            393     ACALL SEARCH_LOOP
+030E 13              394     RRC A
+030F DDFB            395     DJNZ R5,S_W_LOOP
+0311 7D08            396     MOV R5, #08H
+0313 A93C            397     MOV R1,ROMPTR                                                    
+0315 F7              398     MOV @R1,A                       
+0316 053C            399     INC ROMPTR
+0318 DCF2            400     DJNZ R4,S_W_LOOP
+031A 22              401     RET
+                     402                                     
+031B                 403     SEARCH_ROM:
+031B 753C40          404     MOV ROMPTR, #40H
+031E 5197            405     ACALL RS_18B20                                                   
+0320 74F0            406     MOV A, #0F0H                                                     
+0322 51AB            407     ACALL W_18B20_BYTE
+0324 D290            408     SETB DQ
+0326 7C08            409     MOV R4, #08H
+0328 710C            410     ACALL S_W_LOOP                                                   
+032A A204            411     MOV C,ROMJF
+032C 9203            412     MOV ROMJE,C
+032E 5197            413     ACALL RS_18B20                                                   
+0330 74F0            414     MOV A, #0F0H                                                     
+0332 51AB            415     ACALL W_18B20_BYTE
+0334 D290            416     SETB DQ
+0336 7C08            417     MOV R4, #08H
+0338 710C            418     ACALL S_W_LOOP                                                   
+033A 22              419     RET
+                     420                                     
+033B                 421     MATCH_ROM1:                                                              
+033B 5197            422     ACALL RS_18B20                                                   
+033D 7455            423     MOV A, #55H                                                              
+033F 51AB            424     ACALL W_18B20_BYTE
+0341 D290            425     SETB DQ
+0343 753C40          426     MOV ROMPTR, #40H                                                 
+0346 7C08            427     MOV R4, #08H
+0348 715B            428     ACALL M_R_LOOP
+034A 22              429     RET
+034B                 430     MATCH_ROM2:                                                              
+034B 5197            431     ACALL RS_18B20                                                   
+034D 7455            432     MOV A, #55H                                                              
+034F 51AB            433     ACALL W_18B20_BYTE
+0351 D290            434     SETB DQ
+0353 753C48          435     MOV ROMPTR, #48H                                                 
+0356 7C08            436     MOV R4, #08H
+0358 715B            437     ACALL M_R_LOOP
+035A 22              438     RET
+035B                 439     M_R_LOOP:                                                                
+035B A93C            440     MOV R1,ROMPTR
+035D E7              441     MOV A,@R1
+035E 51AB            442     ACALL W_18B20_BYTE
+0360 053C            443     INC ROMPTR
+0362 DCF7            444     DJNZ R4,M_R_LOOP
+0364 22              445     RET
+                     446                                                                     
+                     447     
+                     448     
+0365                 449     KEY_0:                           
+0365 C2B3            450     CLR K0
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE     8
+
+0367 D2B6            451     SETB K1
+0369 D2B7            452     SETB K2
+036B 00              453     NOP
+036C 00              454     NOP
+036D 20B216          455     JB P3.2,KEY_1
+0370 914D            456     ACALL DELAY10MS                                          
+0372 30B203          457     JNB P3.2,KEY0                                    
+0375 71F0            458     ACALL KCLR
+0377 32              459     RETI
+0378                 460     KEY0:                           
+0378 914D            461     ACALL DELAY10MS                                          
+037A 20B202          462     JB P3.2,KEY00                                                    
+037D 6178            463     AJMP KEY0                                                
+037F                 464     KEY00:
+037F B200            465     CPL LSE
+0381 512E            466     ACALL DRIVE_LED_KEY
+0383 71F0            467     ACALL KCLR
+0385 32              468     RETI
+0386                 469     KEY_1:                   
+0386 D2B3            470     SETB K0
+0388 C2B6            471     CLR K1
+038A D2B7            472     SETB K2
+038C 00              473     NOP
+038D 00              474     NOP
+038E 20B21D          475     JB P3.2,KEY_2
+0391 914D            476     ACALL DELAY10MS                                          
+0393 30B203          477     JNB P3.2,KEY1                                    
+0396 71F0            478     ACALL KCLR
+0398 32              479     RETI
+0399                 480     KEY1:
+0399 914D            481     ACALL DELAY10MS                                          
+039B 20B202          482     JB P3.2,KEY10                                                    
+039E 6199            483     AJMP KEY1                                                        
+03A0                 484     KEY10:
+03A0 200003          485     JB LSE,KEY100
+03A3 71F0            486     ACALL KCLR
+03A5 32              487     RETI
+03A6                 488     KEY100:
+03A6 E539            489     MOV A,TPDF_COPY
+03A8 B46328          490     CJNE A, #63H,JUDGE_T                                             
+03AB 71F0            491     ACALL KCLR
+03AD 32              492     RETI
+03AE                 493     KEY_2:                   
+03AE D2B6            494     SETB K1
+03B0 C2B7            495     CLR K2
+03B2 D2B3            496     SETB K0
+03B4 00              497     NOP
+03B5 00              498     NOP
+03B6 914D            499     ACALL DELAY10MS                                          
+03B8 30B203          500     JNB P3.2,KEY2                                    
+03BB 71F0            501     ACALL KCLR
+03BD 32              502     RETI
+03BE                 503     KEY2:                    
+03BE 914D            504     ACALL DELAY10MS                                          
+03C0 20B202          505     JB P3.2,KEY20                                                    
+03C3 61BE            506     AJMP KEY2                                                
+03C5                 507     KEY20:
+03C5 200003          508     JB LSE,KEY200
+03C8 71F0            509     ACALL KCLR
+03CA 32              510     RETI
+03CB                 511     KEY200:
+03CB E539            512     MOV A,TPDF_COPY
+03CD B40308          513     CJNE A, #03H,JUDGE_B                                             
+03D0 71F0            514     ACALL KCLR
+03D2 32              515     RETI
+03D3                 516     JUDGE_T:
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE     9
+
+03D3 5008            517     JNC JUDGE_99
+03D5 04              518     INC A
+03D6 61E3            519     AJMP COPY
+03D8                 520     JUDGE_B:
+03D8 4007            521     JC JUDGE_03
+03DA 14              522     DEC A
+03DB 61E3            523     AJMP COPY
+03DD                 524     JUDGE_99:
+03DD 7463            525     MOV A,#63H
+03DF 61E3            526     AJMP COPY
+03E1                 527     JUDGE_03:
+03E1 7403            528     MOV A,#03H
+03E3                 529     COPY:
+03E3 91BF            530     ACALL E_E2PROM
+03E5 F539            531     MOV TPDF_COPY,A
+03E7 91D3            532     ACALL W_E2PROM
+03E9 E539            533     MOV A,TPDF_COPY
+03EB 512E            534     ACALL DRIVE_LED_KEY
+03ED 71F0            535     ACALL KCLR
+03EF 32              536     RETI
+03F0                 537     KCLR:
+03F0 C2B3            538     CLR K0
+03F2 C2B6            539     CLR K1
+03F4 C2B7            540     CLR K2
+03F6 22              541     RET
+                     542                                                                     
+                     543     
+                     544     
+03F7                 545     DELAY2US:                       ;@11.0592MHz
+03F7 00              546             NOP
+03F8 C030            547             PUSH 30H
+03FA 753001          548             MOV 30H,#1
+03FD                 549     NEXT2US:
+03FD D530FD          550             DJNZ 30H,NEXT2US
+0400 D030            551             POP 30H
+0402 22              552             RET
+0403                 553     DELAY10US:                      ;@11.0592MHz
+0403 C030            554             PUSH 30H
+0405 753013          555             MOV 30H,#19
+0408                 556     NEXT10US:
+0408 D530FD          557             DJNZ 30H,NEXT10US
+040B D030            558             POP 30H
+040D 22              559             RET
+040E                 560     DELAY25US:                      ;@11.0592MHz
+040E C030            561             PUSH 30H
+0410 753034          562             MOV 30H,#52
+0413                 563     NEXT25US:
+0413 D530FD          564             DJNZ 30H,NEXT25US
+0416 D030            565             POP 30H
+0418 22              566             RET
+0419                 567     DELAY60US:                      ;@11.0592MHz
+0419 00              568             NOP
+041A 00              569             NOP
+041B 00              570             NOP
+041C C030            571             PUSH 30H
+041E 753081          572             MOV 30H,#129
+0421                 573     NEXT60US:
+0421 D530FD          574             DJNZ 30H,NEXT60US
+0424 D030            575             POP 30H
+0426 22              576             RET
+0427                 577     DELAY80US:                      ;@11.0592MHz
+0427 00              578             NOP
+0428 00              579             NOP
+0429 00              580             NOP
+042A 00              581             NOP
+042B C030            582             PUSH 30H
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE    10
+
+042D 7530AD          583             MOV 30H,#173
+0430                 584     NEXT80US:
+0430 D530FD          585             DJNZ 30H,NEXT80US
+0433 D030            586             POP 30H
+0435 22              587             RET
+0436                 588     DELAY600US:                     ;@11.0592MHz
+0436 00              589             NOP
+0437 00              590             NOP
+0438 C030            591             PUSH 30H
+043A C031            592             PUSH 31H
+043C 753006          593             MOV 30H,#6
+043F 753124          594             MOV 31H,#36
+0442                 595     NEXT600US:
+0442 D531FD          596             DJNZ 31H,NEXT600US
+0445 D530FA          597             DJNZ 30H,NEXT600US
+0448 D031            598             POP 31H
+044A D030            599             POP 30H
+044C 22              600             RET
+044D                 601     DELAY10MS:                      ;@11.0592MHz
+044D 00              602             NOP
+044E 00              603             NOP
+044F 00              604             NOP
+0450 C030            605             PUSH 30H
+0452 C031            606             PUSH 31H
+0454 753057          607             MOV 30H,#87
+0457 75310A          608             MOV 31H,#10
+045A                 609     NEXT10MS:
+045A D531FD          610             DJNZ 31H,NEXT10MS
+045D D530FA          611             DJNZ 30H,NEXT10MS
+0460 D031            612             POP 31H
+0462 D030            613             POP 30H
+0464 22              614             RET
+                     615     
+0465                 616     DELAY800MS:                     ;@11.0592MHz
+0465 00              617             NOP
+0466 00              618             NOP
+0467 00              619             NOP
+0468 C030            620             PUSH 30H
+046A C031            621             PUSH 31H
+046C C032            622             PUSH 32H
+046E 75301B          623             MOV 30H,#27
+0471 7531E5          624             MOV 31H,#229
+0474 7532F9          625             MOV 32H,#249
+0477                 626     NEXT800MS:
+0477 D532FD          627             DJNZ 32H,NEXT800MS
+047A D531FA          628             DJNZ 31H,NEXT800MS
+047D D530F7          629             DJNZ 30H,NEXT800MS
+0480 D032            630             POP 32H
+0482 D031            631             POP 31H
+0484 D030            632             POP 30H
+0486 22              633             RET
+0487                 634     DELAY1000MS:                    ;@11.0592MHz
+0487 00              635             NOP
+0488 00              636             NOP
+0489 00              637             NOP
+048A C030            638             PUSH 30H
+048C C031            639             PUSH 31H
+048E C032            640             PUSH 32H
+0490 753022          641             MOV 30H,#34
+0493 75319F          642             MOV 31H,#159
+0496 753238          643             MOV 32H,#56
+0499                 644     NEXT1000MS:
+0499 D532FD          645             DJNZ 32H,NEXT1000MS
+049C D531FA          646             DJNZ 31H,NEXT1000MS
+049F D530F7          647             DJNZ 30H,NEXT1000MS
+04A2 D032            648             POP 32H
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE    11
+
+04A4 D031            649             POP 31H
+04A6 D030            650             POP 30H
+04A8 22              651             RET
+                     652                                                                     
+                     653     
+                     654     
+04A9                 655     R_E2PROM:                                                                
+04A9 75C300          656     MOV IAP_ADDRH, #00H
+04AC 75C400          657     MOV IAP_ADDRL, #00H
+04AF 75C783          658     MOV IAP_CONTR, #10000011B
+04B2 75C501          659     MOV IAP_CMD, #01H
+04B5 75C65A          660     MOV IAP_TRIG, #5AH
+04B8 75C6A5          661     MOV IAP_TRIG, #0A5H
+04BB 00              662     NOP
+04BC E5C2            663     MOV A,IAP_DATA
+04BE 22              664     RET
+04BF                 665     E_E2PROM:                                                                
+04BF 75C300          666     MOV IAP_ADDRH, #00H
+04C2 75C400          667     MOV IAP_ADDRL, #00H
+04C5 75C783          668     MOV IAP_CONTR, #10000011B
+04C8 75C503          669     MOV IAP_CMD, #03H
+04CB 75C65A          670     MOV IAP_TRIG, #5AH
+04CE 75C6A5          671     MOV IAP_TRIG, #0A5H
+04D1 00              672     NOP
+04D2 22              673     RET
+04D3                 674     W_E2PROM:                                                                
+04D3 F5C2            675     MOV IAP_DATA, A
+04D5 75C300          676     MOV IAP_ADDRH, #00H
+04D8 75C400          677     MOV IAP_ADDRL, #00H
+04DB 75C783          678     MOV IAP_CONTR, #10000011B
+04DE 75C502          679     MOV IAP_CMD, #02H
+04E1 75C65A          680     MOV IAP_TRIG, #5AH
+04E4 75C6A5          681     MOV IAP_TRIG, #0A5H
+04E7 00              682     NOP
+04E8 22              683     RET
+                     684     END
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE    12
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+ACC. . . . . . . .  D ADDR   00E0H   A   
+B. . . . . . . . .  D ADDR   00F0H   A   
+CCLAT. . . . . . .  C ADDR   01A4H   A   
+CCLATNF. . . . . .  N NUMB   0005H   A   
+CCLAT_MOV_L. . . .  C ADDR   01FEH   A   
+CCLAT_MOV_R. . . .  C ADDR   01F7H   A   
+CCLAT_N. . . . . .  C ADDR   01DEH   A   
+CCLAT_TPDF . . . .  C ADDR   0249H   A   
+COPY . . . . . . .  C ADDR   03E3H   A   
+DELAY1000MS. . . .  C ADDR   0487H   A   
+DELAY10MS. . . . .  C ADDR   044DH   A   
+DELAY10US. . . . .  C ADDR   0403H   A   
+DELAY25US. . . . .  C ADDR   040EH   A   
+DELAY2US . . . . .  C ADDR   03F7H   A   
+DELAY600US . . . .  C ADDR   0436H   A   
+DELAY60US. . . . .  C ADDR   0419H   A   
+DELAY800MS . . . .  C ADDR   0465H   A   
+DELAY80US. . . . .  C ADDR   0427H   A   
+DO . . . . . . . .  C ADDR   0198H   A   
+DQ . . . . . . . .  B ADDR   0090H.0 A   
+DRIVE_LED_C. . . .  C ADDR   0205H   A   
+DRIVE_LED_KEY. . .  C ADDR   022EH   A   
+DRV_N. . . . . . .  C ADDR   021BH   A   
+EXECT. . . . . . .  B ADDR   0090H.1 A   
+E_E2PROM . . . . .  C ADDR   04BFH   A   
+IAP_ADDRH. . . . .  D ADDR   00C3H   A   
+IAP_ADDRL. . . . .  D ADDR   00C4H   A   
+IAP_CMD. . . . . .  D ADDR   00C5H   A   
+IAP_CONTR. . . . .  D ADDR   00C7H   A   
+IAP_DATA . . . . .  D ADDR   00C2H   A   
+IAP_TRIG . . . . .  D ADDR   00C6H   A   
+IE . . . . . . . .  D ADDR   00A8H   A   
+INIT . . . . . . .  C ADDR   0116H   A   
+JG_0 . . . . . . .  C ADDR   02E1H   A   
+JG_1 . . . . . . .  C ADDR   02E7H   A   
+JG_ROMR. . . . . .  C ADDR   02DBH   A   
+JUDGE_03 . . . . .  C ADDR   03E1H   A   
+JUDGE_99 . . . . .  C ADDR   03DDH   A   
+JUDGE_B. . . . . .  C ADDR   03D8H   A   
+JUDGE_T. . . . . .  C ADDR   03D3H   A   
+J_DO . . . . . . .  C ADDR   018BH   A   
+J_UNDO . . . . . .  C ADDR   0192H   A   
+K0 . . . . . . . .  B ADDR   00B0H.3 A   
+K1 . . . . . . . .  B ADDR   00B0H.6 A   
+K2 . . . . . . . .  B ADDR   00B0H.7 A   
+KCLR . . . . . . .  C ADDR   03F0H   A   
+KEY0 . . . . . . .  C ADDR   0378H   A   
+KEY00. . . . . . .  C ADDR   037FH   A   
+KEY1 . . . . . . .  C ADDR   0399H   A   
+KEY10. . . . . . .  C ADDR   03A0H   A   
+KEY100 . . . . . .  C ADDR   03A6H   A   
+KEY2 . . . . . . .  C ADDR   03BEH   A   
+KEY20. . . . . . .  C ADDR   03C5H   A   
+KEY200 . . . . . .  C ADDR   03CBH   A   
+KEY_0. . . . . . .  C ADDR   0365H   A   
+KEY_1. . . . . . .  C ADDR   0386H   A   
+KEY_2. . . . . . .  C ADDR   03AEH   A   
+LCK. . . . . . . .  B ADDR   0090H.5 A   
+LEDN1. . . . . . .  D ADDR   0032H   A   
+LEDN2. . . . . . .  D ADDR   0033H   A   
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE    13
+
+LEDN3. . . . . . .  D ADDR   0034H   A   
+LEDNUM . . . . . .  C ADDR   0289H   A   
+LEDNUMPT . . . . .  D ADDR   0052H   A   
+LSE. . . . . . . .  N NUMB   0000H   A   
+MAIN . . . . . . .  C ADDR   0100H   A   
+MATCH_ROM1 . . . .  C ADDR   033BH   A   
+MATCH_ROM2 . . . .  C ADDR   034BH   A   
+M_LOOP . . . . . .  C ADDR   0102H   A   
+M_R_LOOP . . . . .  C ADDR   035BH   A   
+NEXT1000MS . . . .  C ADDR   0499H   A   
+NEXT10MS . . . . .  C ADDR   045AH   A   
+NEXT10US . . . . .  C ADDR   0408H   A   
+NEXT25US . . . . .  C ADDR   0413H   A   
+NEXT2US. . . . . .  C ADDR   03FDH   A   
+NEXT600US. . . . .  C ADDR   0442H   A   
+NEXT60US . . . . .  C ADDR   0421H   A   
+NEXT800MS. . . . .  C ADDR   0477H   A   
+NEXT80US . . . . .  C ADDR   0430H   A   
+OE . . . . . . . .  B ADDR   0090H.3 A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P3 . . . . . . . .  D ADDR   00B0H   A   
+PCON . . . . . . .  D ADDR   0087H   A   
+READ_T_DO. . . . .  C ADDR   0155H   A   
+ROM1_1 . . . . . .  D ADDR   0040H   A   
+ROM1_2 . . . . . .  D ADDR   0041H   A   
+ROM1_3 . . . . . .  D ADDR   0042H   A   
+ROM1_4 . . . . . .  D ADDR   0043H   A   
+ROM1_5 . . . . . .  D ADDR   0044H   A   
+ROM1_6 . . . . . .  D ADDR   0045H   A   
+ROM1_7 . . . . . .  D ADDR   0046H   A   
+ROM1_8 . . . . . .  D ADDR   0047H   A   
+ROM2_1 . . . . . .  D ADDR   0048H   A   
+ROM2_2 . . . . . .  D ADDR   0049H   A   
+ROM2_3 . . . . . .  D ADDR   004AH   A   
+ROM2_4 . . . . . .  D ADDR   004BH   A   
+ROM2_5 . . . . . .  D ADDR   004CH   A   
+ROM2_6 . . . . . .  D ADDR   004DH   A   
+ROM2_7 . . . . . .  D ADDR   004EH   A   
+ROM2_8 . . . . . .  D ADDR   004FH   A   
+ROMJ . . . . . . .  D ADDR   003DH   A   
+ROMJE. . . . . . .  N NUMB   0003H   A   
+ROMJF. . . . . . .  N NUMB   0004H   A   
+ROMPTR . . . . . .  D ADDR   003CH   A   
+ROMR1. . . . . . .  N NUMB   0001H   A   
+ROMR2. . . . . . .  N NUMB   0002H   A   
+RS_18B20 . . . . .  C ADDR   0297H   A   
+R_18B20_BIT. . . .  C ADDR   02C3H   A   
+R_18B20_BYTE . . .  C ADDR   02BFH   A   
+R_E2PROM . . . . .  C ADDR   04A9H   A   
+SCK. . . . . . . .  B ADDR   0090H.4 A   
+SDI. . . . . . . .  B ADDR   0090H.2 A   
+SEARCH_LOOP. . . .  C ADDR   02D3H   A   
+SEARCH_ROM . . . .  C ADDR   031BH   A   
+SP . . . . . . . .  D ADDR   0081H   A   
+S_R_00 . . . . . .  C ADDR   02F8H   A   
+S_R_00_1 . . . . .  C ADDR   0304H   A   
+S_R_01 . . . . . .  C ADDR   02EDH   A   
+S_R_10 . . . . . .  C ADDR   02F1H   A   
+S_R_11 . . . . . .  C ADDR   02F5H   A   
+S_W_LOOP . . . . .  C ADDR   030CH   A   
+TCON . . . . . . .  D ADDR   0088H   A   
+TEMP1. . . . . . .  D ADDR   003EH   A   
+TEMP2. . . . . . .  D ADDR   003FH   A   
+TPDF_C . . . . . .  D ADDR   003AH   A   
+TPDF_COPY. . . . .  D ADDR   0039H   A   
+TPDF_COPY_H. . . .  D ADDR   0054H   A   
+A51 MACRO ASSEMBLER  C_FAN                                                                02/08/2016 19:52:57 PAGE    14
+
+TPDF_COPY_L. . . .  D ADDR   0053H   A   
+TPDF_C_H . . . . .  D ADDR   0051H   A   
+TPDF_C_L . . . . .  D ADDR   0050H   A   
+TPT1_H . . . . . .  D ADDR   0036H   A   
+TPT1_L . . . . . .  D ADDR   0035H   A   
+TPT2_H . . . . . .  D ADDR   0038H   A   
+TPT2_L . . . . . .  D ADDR   0037H   A   
+UNDO . . . . . . .  C ADDR   019EH   A   
+USELESS. . . . . .  C ADDR   0246H   A   
+WKTCH. . . . . . .  D ADDR   00ABH   A   
+WKTCL. . . . . . .  D ADDR   00AAH   A   
+W_18B20_BIT. . . .  C ADDR   02AFH   A   
+W_18B20_BYTE . . .  C ADDR   02ABH   A   
+W_E2PROM . . . . .  C ADDR   04D3H   A   
+W_LAT. . . . . . .  D ADDR   003BH   A   
+W_LATCH. . . . . .  C ADDR   025BH   A   
+W_L_LOOP . . . . .  C ADDR   027EH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
