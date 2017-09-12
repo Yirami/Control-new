@@ -52,3 +52,8 @@ Mkfile.old
 dkms.conf
 
 # Yirami
+/pcb/History/
+/pcb/Project Logs for TemManage/
+/pcb/Project Outputs for TemManage/
+/src/Listings/
+/src/Objects/

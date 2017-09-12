@@ -6,8 +6,8 @@ Water cooling power control
 ## 说明
 采集DS18b20传感器的温度数据，并依据设定的阈值，自动调节水泵功率。
 + `./3D/`下为基于ProE/CREO建立的水冷箱三维模型  
-+ `./pcb/`下为电路原理图*（基于Altium Designer）*  
-+ `./src/`下为源代码*（ASM语言）*
++ `./pcb/`下为PCB工程*（基于Altium Designer）*  
++ `./src/`下为源代码*（C语言）*
 
 ---
 ## 细节
@@ -20,3 +20,7 @@ Water cooling power control
 + 整体效果  
 ![整体A](https://ooo.0o0.ooo/2017/09/12/59b76ae581c2e.jpg)  
 ![整体B](https://ooo.0o0.ooo/2017/09/12/59b76ae54f869.jpg)
++ 新增PCB
+![草图](https://ooo.0o0.ooo/2017/09/12/59b773a16ff7e.jpg)  
+![PCB-A](https://ooo.0o0.ooo/2017/09/12/59b773a16dfe5.jpg)  
+![PCB-B](https://ooo.0o0.ooo/2017/09/12/59b773a16a868.jpg)

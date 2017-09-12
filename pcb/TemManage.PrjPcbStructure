@@ -1,0 +1,6 @@
+Record=TopLevelDocument|FileName=system.SchDoc
+Record=SheetSymbol|SourceDocument=system.SchDoc|Designator=U_lcd|SchDesignator=U_lcd|FileName=lcd.SchDoc|SymbolType=Normal|RawFileName=lcd.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=system.SchDoc|Designator=U_mcu|SchDesignator=U_mcu|FileName=mcu.SchDoc|SymbolType=Normal|RawFileName=mcu.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=system.SchDoc|Designator=U_motor|SchDesignator=U_motor|FileName=motor.SchDoc|SymbolType=Normal|RawFileName=motor.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=system.SchDoc|Designator=U_power|SchDesignator=U_power|FileName=power.SchDoc|SymbolType=Normal|RawFileName=power.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=system.SchDoc|Designator=U_sensors|SchDesignator=U_sensors|FileName=sensors.SchDoc|SymbolType=Normal|RawFileName=sensors.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 

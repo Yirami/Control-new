@@ -1,0 +1,19 @@
+﻿Field=#~Integer~#~50|Field=Comment~String~Comment~125|Field=Description~String~Description~162|Field=Designator~String~Designator~116|Field=Footprint~String~Footprint~116|Field=LibRef~String~LibRef~116|Field=Quantity~Integer~Quantity~115|ReportField=Currency~<none>|ReportField=ProductionQuantity~1|ReportField=ProjectFileName~TemManage.PrjPcb|ReportField=ProjectFullPath~D:\OneDrive\Documents\Altium Designer\TemManage\TemManage.PrjPcb|ReportField=Title~Bill of Materials For Project [TemManage.PrjPcb] (No PCB Document Selected)|ReportField=TotalQuantity~46|ReportField=ReportTime~9:09:22|ReportField=ReportDate~2016/8/31|ReportField=ReportDateTime~2016/8/31 9:09:22|ReportField=OutputName~Bill of Materials|ReportField=OutputType~BOM_PartType|ReportField=GeneratorName~BOM|ReportField=GeneratorDescription~Bill of Materials|ReportField=VariantName~None|ReportField=Address1~|ReportField=Address2~|ReportField=Address3~|ReportField=Address4~|ReportField=Application_BuildNumber~|ReportField=ApprovedBy~|ReportField=Author~|ReportField=CheckedBy~|ReportField=CompanyName~|ReportField=CurrentDate~2016/8/31|ReportField=CurrentTime~9:09:06|ReportField=Date~|ReportField=DocumentFullPathAndName~D:\OneDrive\Documents\Altium Designer\TemManage\system.SchDoc|ReportField=DocumentName~system.SchDoc|ReportField=DocumentNumber~|ReportField=DrawnBy~|ReportField=Engineer~|ReportField=ImagePath~|ReportField=ModifiedDate~2016/8/18|ReportField=Organization~|ReportField=ProjectName~TemManage.PrjPcb|ReportField=Revision~|ReportField=Rule~|ReportField=SheetNumber~|ReportField=SheetTotal~|ReportField=Time~|ReportField=Title~|ReportField=DataSourceFileName~TemManage.PrjPcb|ReportField=DataSourceFullPath~D:\OneDrive\Documents\Altium Designer\TemManage\TemManage.PrjPcb
+1|Cap2|非极性电容|C0, C2, C4|0805(M)|Cap2|3
+2|Cap1|极性电容|C1, C3|25V47uF(DIP)|Cap1|2
+3|1N5819|肖特基二极管|D0|SMA(M)|Diode2|1
+4|1N4007|整流二极管|D1, D2|SMA(M)|Diode1|2
+5|2Pin||Download|2Pin(DIP)|2Pin|1
+6|Fuse|保险丝|F|1812(M)|Fuse|1
+7|1602|lcd1602|LCD|1602(DIP)|1602|1
+8|LED||LED0, LED1|0805_(M)|LED|2
+9|LM317*|三端稳压(可调)|LM0|TO220(DIP)|LM317*|1
+10|LM7805*|三端稳压|LM1|TO220(DIP)|LM7805*|1
+11|MOSFET-N||NMOS0, NMOS1|TO220(DIP)|MOSFET-N|2
+12|Res||R0, R1, R2, R3, R4, R5, R6, R7, R8, R9|0805(M)|Res|10
+13|Rpot|电位计|R10|3296W(DIP)|Rpot|1
+14|AFT-03(8*8)|双刀双掷(DPDT)|SW, SW Power|AFT-03(DIP)|AFT-03(8*8)|2
+15|KF301-2P|接线端子 脚距5.08MM 300V/16A|Ter0, Ter1, Ter2P0, Ter2P1|KF301-2P(DIP)|KF301-2P|4
+16|18b20|DS18B20 Programmable Resolution 1-Wire® Digital Thermometer|Ther0, Ther1, Ther2, Ther3, Ther4, Ther5, Ther6, Ther7, Ther8, Ther9|3Pin(DIP)|18b20|10
+17|STC15W401AS_SOP28_TSSOP28_SKDIP28||U0|MCU(M)|STC15W401AS_SOP28_TSSOP28_SKDIP28|1
+18|MicroUSB_B-|母头|USB0|MicroUSB_B-(M)|MicroUSB_B-|1

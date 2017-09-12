@@ -1,3 +1,0 @@
-".\Objects\c_fan.obj" 
-TO ".\Objects\c_fan" 
-PRINT(".\Listings\c_fan.m51") RAMSIZE(256) 
