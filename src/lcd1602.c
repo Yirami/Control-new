@@ -3,6 +3,8 @@ unsigned char num;
 unsigned char code table1[]="Cpu SB Gpu A  W";
 unsigned char code table2[]="All are offline!";
 unsigned char code table3[]="Device online!";
+unsigned char code table4[]="Check Dev Status";
+unsigned char code table5[]="Num of Devices:";
 /*******************************************************************
 * 写指令函数（并行8位传输）
 *******************************************************************/
@@ -71,7 +73,7 @@ void lcd_Disp(unsigned char cpu,unsigned char sb,unsigned char gpu,unsigned char
 /*******************************************************************
 * DS18B20初始化状态显示
 *******************************************************************/
-void lcd_DispMessage(bit state)
+void lcd_Disp_Check_Status(bit state)
 {
 	en=0;
 	lcd_WriteCom(0x38);			//00111000B（设置显示模式）
@@ -79,9 +81,9 @@ void lcd_DispMessage(bit state)
 	lcd_WriteCom(0x06);			//00000110B（操作一个字符后 指针+1，写一个字符后，整屏不左移）
 	lcd_WriteCom(0x01);			//00000001B（显示清屏）
 	lcd_WriteCom(0x80);			//（设置数据指针）
-	for(num=0;num<strlen(table1);num++)
+	for(num=0;num<strlen(table4);num++)
 	{
-		lcd_WriteData(table1[num]);
+		lcd_WriteData(table4[num]);
 	}
 	lcd_WriteCom(0x80+0x40);	//（设置数据指针）
 	if(state)
@@ -98,4 +100,23 @@ void lcd_DispMessage(bit state)
 			lcd_WriteData(table2[num]);
 		}
 	}
+}
+void lcd_Disp_DevicesNum(unsigned char number)
+{
+	unsigned char shi,ge;
+	en=0;
+	lcd_WriteCom(0x38);			//00111000B（设置显示模式）
+	lcd_WriteCom(0x0e);			//00001110B（开显示，显示光标，光标不闪烁）
+	lcd_WriteCom(0x06);			//00000110B（操作一个字符后 指针+1，写一个字符后，整屏不左移）
+	lcd_WriteCom(0x01);			//00000001B（显示清屏）
+	lcd_WriteCom(0x80);			//（设置数据指针）
+	for(num=0;num<strlen(table5);num++)
+	{
+		lcd_WriteData(table5[num]);
+	}
+	lcd_WriteCom(0x80+0x40);	//（设置数据指针）
+	shi=number/10;
+	ge=number%10;
+	lcd_WriteData(shi+0x30);
+	lcd_WriteData(ge+0x30);
 }

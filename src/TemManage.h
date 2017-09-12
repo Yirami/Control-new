@@ -11,4 +11,4 @@ PWM@SYSclk/12,8
 #define uint unsigned int
 sbit fan=P2^3;
 sbit pwm=P2^6;
-void init();
+unsigned char init();

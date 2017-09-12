@@ -403,6 +403,11 @@
               <FileType>5</FileType>
               <FilePath>.\delay.h</FilePath>
             </File>
+            <File>
+              <FileName>e2prom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\e2prom.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

@@ -15,5 +15,6 @@ void lcd_WriteCom(unsigned char com);
 void lcd_WriteData(unsigned char date);
 void lcd_WriteTem(unsigned char tem);
 void lcd_Disp(unsigned char cpu,unsigned char gpu,unsigned char sb,unsigned char air,unsigned char water);
-void lcd_DispMessage(bit state);
+void lcd_Disp_Check_Status(bit state);
+void lcd_Disp_DevicesNum(unsigned char number);
 #endif
